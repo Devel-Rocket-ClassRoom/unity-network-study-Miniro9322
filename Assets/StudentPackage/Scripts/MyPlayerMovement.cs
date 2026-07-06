@@ -1,4 +1,5 @@
 using System.Collections;
+using Cysharp.Threading.Tasks;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -40,7 +41,7 @@ namespace NetworkStudy.Student
 
             float move = 0f;
             float turn = 0f;
-            float currentSpeed = keyboard.nKey.isPressed ? m_MoveSpeed * 2f : m_MoveSpeed;
+            float currentSpeed = keyboard.shiftKey.isPressed ? m_MoveSpeed * 2f : m_MoveSpeed;
 
             if (keyboard.wKey.isPressed)
             {
@@ -59,16 +60,16 @@ namespace NetworkStudy.Student
                 turn -= 1f;
             }
 
-            if (keyboard.bKey.wasPressedThisFrame && !m_IsJumping)
+            if (keyboard.spaceKey.wasPressedThisFrame && !m_IsJumping)
             {
-                StartCoroutine(JumpRoutine());
+                JumpRoutine().Forget();
             }
 
             transform.Rotate(0f, turn * m_RotateSpeed * Time.deltaTime, 0f);
             transform.Translate(0f, 0f, move * currentSpeed * Time.deltaTime);
         }
 
-        private IEnumerator JumpRoutine()
+        private async UniTask JumpRoutine()
         {
             m_IsJumping = true;
 
@@ -87,7 +88,7 @@ namespace NetworkStudy.Student
                     startPos.y + height,
                     transform.position.z
                 );
-                yield return null;
+                await UniTask.Yield();
             }
 
             // 착지 시 y 정확히 원위치

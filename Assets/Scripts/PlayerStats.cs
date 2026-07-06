@@ -104,7 +104,7 @@ public class PlayerStats : NetworkBehaviour
             return;
         }
 
-        if (keyboard.spaceKey.wasPressedThisFrame)
+        if (keyboard.fKey.wasPressedThisFrame)
         {
             AddScoreRpc(m_ScorePerpress);
         }
